@@ -15,21 +15,22 @@
     this.size = size;
     this.score = 0;
     this.grid = new Grid(size);
-    this.tiles = [];
   };
 
   Game.prototype.addTile = function () {
     var position = this.grid.randomPosition();
     this.grid.addTile(position, _INITIAL_VALUE);
-    this.tiles.push(this.grid.grid[position.x][position.y]);
   };
 
   Game.prototype.slide = function (direction) {
-    var tile = this.tiles[0];
+    var tiles = this.tileOrder(direction),
+        game = this;
 
-    var endPosition = this.findEndPosition(direction, tile);
-    this.moveTile(tile, endPosition);
-    this.grid.print();
+    tiles.forEach(function (tile) {
+      var endPosition = game.findEndPosition(direction, tile);
+      game.moveTile(tile, endPosition);
+      game.grid.print();
+    })
   };
 
   Game.prototype.moveTile = function (tile, newPosition) {
@@ -60,9 +61,55 @@
   };
 
   Game.prototype.tileOrder = function (direction) {
-    
-    if () {
+    var tiles = [],
+        grid = this.grid.grid;
 
+    switch (direction) {
+      // check all tiles on row this.grid.grid[0][] first
+      case "left":
+        for (var x = 0; x < grid.length; x++) {
+          for (var y = 0; y < grid.length; y++) {
+            if (grid[x][y] !== null) {
+              tiles.push(grid[x][y]);
+            } 
+          }
+        }
+        break;
+
+      // check all tiles on row this.grid.grid[size-1][] first
+      case "right":
+        for (var x = this.size - 1; x >= 0; x--) {
+          for (var y = 0; y < grid.length; y++) {
+            if (grid[x][y] !== null) {
+              tiles.push(grid[x][y]);
+            } 
+          }
+        }
+        break;
+
+      // check all tiles on col this.grid.grid[][size-1] first
+      case "up":
+        for (var x = this.size - 1; x >= 0; x--) {
+          for (var y = 0; y < grid.length; y++) {
+            if (grid[y][x] !== null) {
+              tiles.push(grid[y][x]);
+            } 
+          }
+        }
+        break;
+
+      // check all tiles on col this.grid.grid[][0] first
+      case "down":
+        for (var x = 0; x < grid.length; x++) {
+          for (var y = 0; y < grid.length; y++) {
+            if (grid[y][x] !== null) {
+              tiles.push(grid[y][x]);
+            } 
+          }
+        }
+        break;
     }
+
+    return tiles;
   };
 })(this);
