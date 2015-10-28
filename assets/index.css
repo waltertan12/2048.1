@@ -8,6 +8,7 @@ body {
 
 .description {
   background-color: gray;
+  margin: 20px auto;
   color: white;
   width: 510px;
   border-radius: 5px;
@@ -70,3 +71,14 @@ body {
 
 }
 
+.show-messages {
+  display: block;
+  border: 5px solid gray;
+  border-radius: 5px;
+  width: 510px;
+  margin: 20px auto;
+}
+
+.hide-messages {
+  display: none;
+}
