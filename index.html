@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Twelve</title>
+  <title>2048.1</title>
   <meta charset="UTF-8">
+  <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/index.css">
+
   <script type="text/javascript" src="scripts/grid.js"></script>
   <script type="text/javascript" src="scripts/tile.js"></script>
   <script type="text/javascript" src="scripts/game.js"></script>
@@ -22,7 +24,17 @@
 </head>
 <body>
   <div class="container">
-    <h1>Twelve</h1>
+    <h1 class="title">2048.1</h1>
+    <div class="container description">
+      <h3>Instructions:</h3>
+        <p>
+          Join the numbers and get to the 2048 tile!
+        </p>
+        <p>
+          Use the arrow keys to move the board
+        </p>
+    </div>
+    <div id="score"></div>
     <div id="twelve-grid" class="row-container">
       <div class="tile-row" id="row-0">
         <div class="tile"></div><div class="tile"></div><div class="tile"></div><div class="tile"></div>

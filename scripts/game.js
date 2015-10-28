@@ -17,6 +17,13 @@
     this.grid = new Grid(size);
   };
 
+  Game.prototype.restart = function () {
+    this.grid = new Grid(4);
+    this.addTile();
+    this.addTile();
+    game.render();
+  }
+
   Game.prototype.comparePositions = function(positionOne, positionTwo) {
     return (
       positionOne.x === positionTwo.x &&
@@ -58,13 +65,14 @@
             tile.isMatch(collisionTile) &&
             !collisionTile.merged) {
 
-          var mergedTile = new Tile(mergePosition, tile.value + 1);
+          var mergedTile = new Tile(mergePosition, tile.value + tile.value);
           mergedTile.merged = true;
 
           grid.removeTile({x: tile.x, y: tile.y});
           grid.removeTile(mergePosition);
           grid.grid[mergePosition.x][mergePosition.y] = mergedTile;
 
+          game.score = game.score + tile.value + tile.value;
           tileMoved = true;
 
         // no merge
@@ -128,19 +136,6 @@
       }
     } while (!obstacleFound && 
              this.validNextPosition({x: x, y: y}))
-
-    // while (!obstacleFound && 
-    //        this.validNextPosition({x: x + dX, y: y + dY})) {
-
-    //   if (this.grid.grid[x + dX][y + dY] !== null) {
-    //     mergedPosition = {x: x + dX, y: y + dY};
-    //     obstacleFound = true;
-    //   } else {
-    //     x = x + dX;
-    //     y = y + dY;
-    //     furthestPos = {x: x, y: y};
-    //   }
-    // }
 
     return (
       {
@@ -220,18 +215,70 @@
     return positions;
   };
 
-  Game.prototype.render = function() {
+  Game.prototype.matchAvailable = function () {
     var grid = this.grid.grid;
+    for (var x = 0; x < grid.length; x ++) {
+      for (var i = 0; i < grid[x].length; i++) {
+        var tile = grid[x][i];
+
+        if (tile !== null) {
+            for (var key in DIRECTIONS) {
+              var position = ;
+              var otherTile = 
+            }
+          }
+          if (otherTile && tile.isMatch(otherTile)) {
+            return true;
+          }
+        }
+      };
+    }
+    return false;
+  }
+
+  Game.prototype.render = function() {
+    var grid = this.grid.grid,
+        score = document.getElementById("score");
 
     for (var x = 0; x < grid.length; x++) {
       var row = document.getElementById("row-" + x);
       for (var y = 0; y < grid[x].length; y++) {
         if (grid[x][y] === null) {
           row.children[y].innerHTML = "&nbsp;";
+          row.children[y].className = "tile";
         } else {
+          var className = this.classGenerator(grid[x][y].value);
           row.children[y].innerHTML = "" + grid[x][y].value;
+          row.children[y].className = "tile " + className;
         }
       }
+    }
+
+    score.innerHTML = "<h1>Score: " + this.score+ "</h1>";
+  };
+
+  Game.prototype.classGenerator = function (value) {
+    switch (value) {
+      case 1:
+        return "one";
+      case 2:
+        return "two";
+      case 4:
+        return "four";
+      case 8:
+        return "eight";
+      case 16:
+        return "sixteen"
+      case 32:
+        return "one";
+      case 64:
+        return "two";
+      case 128:
+        return "four";
+      case 256:
+        return "eight";
+      case 512:
+        return "sixteen"
     }
   };
 })(this);

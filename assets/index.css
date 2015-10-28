@@ -1,3 +1,22 @@
+body {
+  font-family: "Varela Round";
+}
+
+.title {
+  font-size: 100px;
+}
+
+.description {
+  background-color: gray;
+  color: white;
+  width: 510px;
+  border-radius: 5px;
+}
+
+.container {
+  text-align: center;
+}
+
 .tile {
   /*float: left;*/
   display: inline-block;
@@ -6,7 +25,8 @@
   text-align: center;
   height: 125px;
   width: 125px;
-  font-size: 75px;
+  font-size: 50px;
+  background-color: lightgray;
 }
 
 .clearfix:after {
@@ -23,5 +43,30 @@
   border: 5px solid gray;
   border-radius: 5px;
   width: 510px;
+  margin: 0 auto;
+}
+
+.one {
+  background-color: #69D2E7;
+}
+
+.two {
+  background-color: #A7DBD8;
+}
+
+.four {
+  background-color: #E0E4CC;
+}
+
+.eight {
+  background-color: #F38630;
+}
+
+.sixteen {
+  background-color: #FA6900;
+}
+
+.thirty-two {
+
 }
 
