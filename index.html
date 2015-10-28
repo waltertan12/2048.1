@@ -2,15 +2,67 @@
 <html>
 <head>
   <title>Twelve</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/index.css">
   <script type="text/javascript" src="scripts/grid.js"></script>
   <script type="text/javascript" src="scripts/tile.js"></script>
   <script type="text/javascript" src="scripts/game.js"></script>
+  <script type="text/javascript" src="scripts/key_listener.js"></script>
+
+
+  <script type="text/javascript" >
+    game = null;
+    window.addEventListener('DOMContentLoaded', function (e) {
+      game = new Game(4);
+      game.addTile();
+      game.render();
+    }, false)
+  </script>
 </head>
 <body>
   <div class="container">
     <h1>Twelve</h1>
-    <div id="content">
-
+    <div id="twelve-grid">
+      <div class="row" id="row-0">
+        <div class="tile">
+        </div>
+        <div class="tile">
+        </div>
+        <div class="tile">
+        </div>
+        <div class="tile">
+        </div>
+      </div>
+      <div class="row" id="row-1">
+        <div class="tile">
+        </div>
+        <div class="tile">
+        </div>
+        <div class="tile">
+        </div>
+        <div class="tile">
+        </div>
+      </div>
+      <div class="row" id="row-2">
+        <div class="tile">
+        </div>
+        <div class="tile">
+        </div>
+        <div class="tile">
+        </div>
+        <div class="tile">
+        </div>
+      </div>
+      <div class="row" id="row-3">
+        <div class="tile">
+        </div>
+        <div class="tile">
+        </div>
+        <div class="tile">
+        </div>
+        <div class="tile">
+        </div>
+      </div>
     </div>
   </div>
 </body>

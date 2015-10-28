@@ -150,4 +150,20 @@
 
     return tiles;
   };
+
+  Game.prototype.render = function() {
+    this.addTile();
+    var grid = this.grid.grid;
+
+    for (var x = 0; x < grid.length; x++) {
+      var row = document.getElementById("row-" + x);
+      for (var y = 0; y < grid[x].length; y++) {
+        if (grid[x][y] === null) {
+          row.children[y].innerHTML = " ";
+        } else {
+          row.children[y].innerHTML = "" + grid[x][y].value;
+        }
+      }
+    }
+  };
 })(this);
