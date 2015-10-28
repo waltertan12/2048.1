@@ -24,18 +24,39 @@
 
   Game.prototype.slide = function (direction) {
     var tiles = this.tileOrder(direction),
+        grid = this.grid,
         game = this;
 
     tiles.forEach(function (tile) {
-      var endPosition = game.findEndPosition(direction, tile);
-      game.moveTile(tile, endPosition);
+      var furthestPosition = game.furthestPosition(direction, tile),
+          collisionTile = grid.grid[furthestPosition.x][furthestPosition.y];
+
+
+      // Handle collision
+      if (collisionTile !== null && 
+          JSON.stringify(tile.position) !== JSON.stringify(furthestPosition) && 
+          tile.isMatch(collisionTile)) {
+        var mergedTile = new Tile(furthestPosition, tile.value + 1);
+        grid.removeTile({x: tile.x, y: tile.y});
+        grid.grid[furthestPosition.x][furthestPosition.y] = mergedTile;
+
+      // No collision
+      } else {
+        var endPosition = game.endPosition(direction, tile);
+        console.log("end position");
+        console.log(endPosition);
+        game.moveTile(tile, endPosition);
+      }
+
       game.grid.print();
     })
   };
 
   Game.prototype.moveTile = function (tile, newPosition) {
-    this.grid.grid[tile.x][tile.y] = null;
-    this.grid.grid[newPosition.x][newPosition.y] = tile;
+    var grid = this.grid.grid;
+
+    grid[tile.x][tile.y] = null;
+    grid[newPosition.x][newPosition.y] = tile;
 
     tile.updatePosition(newPosition);
   };
@@ -44,7 +65,7 @@
     return this.grid.validPosition(nextPosition);
   };
 
-  Game.prototype.findEndPosition = function (direction, tile) {
+  Game.prototype.furthestPosition = function (direction, tile) {
     var x = tile.x,
         y = tile.y,
         dX = DIRECTIONS[direction].x,
@@ -59,6 +80,23 @@
 
     return nextPosition;
   };
+
+  Game.prototype.endPosition = function (direction, tile) {
+    var x = tile.x,
+        y = tile.y,
+        dX = DIRECTIONS[direction].x,
+        dY = DIRECTIONS[direction].y,
+        nextPosition = {x: x, y: y};
+
+    while (this.validNextPosition({x: x + dX, y: y + dY}) &&
+           this.grid.grid[x + dX][y + dY] === null) {
+      x = x + dX;
+      y = y + dY;
+      nextPosition = {x: x, y: y};
+    }
+
+    return nextPosition;
+  }
 
   Game.prototype.tileOrder = function (direction) {
     var tiles = [],

@@ -50,7 +50,7 @@
   };
 
   Grid.prototype.removeTile = function (position) {
-    this.insertTile(position.x, position.y, null);
+    this.grid[position.x][position.y] = null;
     this.print();
   };
 
@@ -62,14 +62,23 @@
       x >= 0 && 
       y >= 0 && 
       x < this.size && 
-      y < this.size && 
-      this.grid[x][y] === null
+      y < this.size
     );
   };
 
   Grid.prototype.print = function () {
+    var string = "";
+    console.log("////////////////////////////");
     for (var i = 0; i < this.grid.length; i++) {
-      console.log(this.grid[i]);
+      for (var j = 0; j < this.grid.length; j++) {
+        if (this.grid[i][j] === null) {
+          string = string + "0 ";
+        } else {
+          string = string + this.grid[i][j].value + " ";
+        }
+      }
+      console.log(string);
+      string = "";
     }
   };
 })(this);

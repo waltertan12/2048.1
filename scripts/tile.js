@@ -2,6 +2,7 @@
   "use strict";
   
   var Tile = root.Tile = function (position, value) {
+    this.position = position;
     this.x = position.x;
     this.y = position.y;
 
