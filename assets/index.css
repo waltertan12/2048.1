@@ -1,9 +1,12 @@
 .tile {
-  float: left;
+  /*float: left;*/
+  display: inline-block;
   border: 1px solid black;
+  vertical-align: top;
   text-align: center;
-  height: 30px;
-  width: 30px;
+  height: 125px;
+  width: 125px;
+  font-size: 75px;
 }
 
 .clearfix:after {
@@ -11,3 +14,14 @@
   display: table;
   clear: both;
 }
+
+.tile-row {
+  width: 100%;
+}
+
+.row-container {
+  border: 5px solid gray;
+  border-radius: 5px;
+  width: 510px;
+}
+

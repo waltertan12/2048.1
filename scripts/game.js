@@ -42,8 +42,6 @@
       tile = grid.grid[position.x][position.y];
       collisionTile = null;
       positions = game.furthestPosition(direction, tile);
-      console.log("Positions for Tile on " + tile.x + ", " + tile.y);
-      console.log(positions);
 
       // does the space still have a tile?
       if (tile !== null) {
@@ -53,10 +51,10 @@
         if (mergePosition !== null) {
           collisionTile = grid.grid[mergePosition.x][mergePosition.y];
         }
-
+        
         // Is there an actual merge?
-        if (collisionTile && 
-            !game.comparePositions(tile.position, mergePosition) && 
+        if (!!collisionTile && 
+            !game.comparePositions(position, mergePosition) && 
             tile.isMatch(collisionTile) &&
             !collisionTile.merged) {
 
@@ -68,13 +66,12 @@
           grid.grid[mergePosition.x][mergePosition.y] = mergedTile;
 
           tileMoved = true;
-          collisionTile = null;
 
         // no merge
         } else {
           var endPosition = positions.furthestPosition;
-          if (!game.comparePositions(tile.position, endPosition)) {
-            game.moveTile(tile, endPosition);
+          game.moveTile(tile, endPosition);
+          if (!game.comparePositions(position, endPosition)) {
             tileMoved = true;
           }
         }
@@ -84,8 +81,6 @@
     if (tileMoved) {
       game.addTile();
     }
-
-    game.grid.print();
   };
 
   Game.prototype.resetTileMerges = function () {
@@ -232,7 +227,7 @@
       var row = document.getElementById("row-" + x);
       for (var y = 0; y < grid[x].length; y++) {
         if (grid[x][y] === null) {
-          row.children[y].innerHTML = " ";
+          row.children[y].innerHTML = "&nbsp;";
         } else {
           row.children[y].innerHTML = "" + grid[x][y].value;
         }
