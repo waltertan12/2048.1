@@ -17,40 +17,86 @@
     this.grid = new Grid(size);
   };
 
+  Game.prototype.comparePositions = function(positionOne, positionTwo) {
+    return (
+      positionOne.x === positionTwo.x &&
+      positionOne.y === positionTwo.y
+    );
+  };
+
   Game.prototype.addTile = function () {
     var position = this.grid.randomPosition();
     this.grid.addTile(position, _INITIAL_VALUE);
   };
 
   Game.prototype.slide = function (direction) {
-    var tiles = this.tileOrder(direction),
+    var positions = this.positionOrder(direction),
         grid = this.grid,
-        game = this;
+        game = this,
+        tileMoved = false,
+        tile, furthestPositions, mergePosition, collisionTile;
 
-    tiles.forEach(function (tile) {
-      var furthestPosition = game.furthestPosition(direction, tile),
-          collisionTile = grid.grid[furthestPosition.x][furthestPosition.y];
+    game.resetTileMerges();
 
+    positions.forEach(function (position) {
+      tile = grid.grid[position.x][position.y];
+      collisionTile = null;
+      positions = game.furthestPosition(direction, tile);
+      console.log("Positions for Tile on " + tile.x + ", " + tile.y);
+      console.log(positions);
 
-      // Handle collision
-      if (collisionTile !== null && 
-          JSON.stringify(tile.position) !== JSON.stringify(furthestPosition) && 
-          tile.isMatch(collisionTile)) {
-        var mergedTile = new Tile(furthestPosition, tile.value + 1);
-        grid.removeTile({x: tile.x, y: tile.y});
-        grid.grid[furthestPosition.x][furthestPosition.y] = mergedTile;
+      // does the space still have a tile?
+      if (tile !== null) {
+        mergePosition = positions.mergePosition;
 
-      // No collision
-      } else {
-        var endPosition = game.endPosition(direction, tile);
-        console.log("end position");
-        console.log(endPosition);
-        game.moveTile(tile, endPosition);
+        // Is there merge possibility?
+        if (mergePosition !== null) {
+          collisionTile = grid.grid[mergePosition.x][mergePosition.y];
+        }
+
+        // Is there an actual merge?
+        if (collisionTile && 
+            !game.comparePositions(tile.position, mergePosition) && 
+            tile.isMatch(collisionTile) &&
+            !collisionTile.merged) {
+
+          var mergedTile = new Tile(mergePosition, tile.value + 1);
+          mergedTile.merged = true;
+
+          grid.removeTile({x: tile.x, y: tile.y});
+          grid.removeTile(mergePosition);
+          grid.grid[mergePosition.x][mergePosition.y] = mergedTile;
+
+          tileMoved = true;
+          collisionTile = null;
+
+        // no merge
+        } else {
+          var endPosition = positions.furthestPosition;
+          if (!game.comparePositions(tile.position, endPosition)) {
+            game.moveTile(tile, endPosition);
+            tileMoved = true;
+          }
+        }
       }
-
-      game.grid.print();
     })
+
+    if (tileMoved) {
+      game.addTile();
+    }
+
+    game.grid.print();
   };
+
+  Game.prototype.resetTileMerges = function () {
+    for (var x = 0; x < this.grid.grid.length; x++) {
+      for (var y = 0; y < this.grid.grid[x].length; y++) {
+        if (this.grid.grid[x][y] !== null) {
+          this.grid.grid[x][y].merged = false;
+        }
+      }
+    }
+  }
 
   Game.prototype.moveTile = function (tile, newPosition) {
     var grid = this.grid.grid;
@@ -70,15 +116,43 @@
         y = tile.y,
         dX = DIRECTIONS[direction].x,
         dY = DIRECTIONS[direction].y,
-        nextPosition = {x: x, y: y};
+        obstacleFound = false,
+        mergedPosition = null,
+        furthestPos = null;
 
-    while (this.validNextPosition({x: x + dX, y: y + dY})) {
-      x = x + dX;
-      y = y + dY;
-      nextPosition = {x: x, y: y};
-    }
+    do {
+      if (this.validNextPosition({x: x + dX, y: y + dY}) &&
+          this.grid.grid[x + dX][y + dY] !== null) {
+        furthestPos = {x: x, y: y};
+        mergedPosition = {x: x + dX, y: y + dY};
+        obstacleFound = true;
+      } else {
+        furthestPos = {x: x, y: y};
+        x = x + dX;
+        y = y + dY;
+      }
+    } while (!obstacleFound && 
+             this.validNextPosition({x: x, y: y}))
 
-    return nextPosition;
+    // while (!obstacleFound && 
+    //        this.validNextPosition({x: x + dX, y: y + dY})) {
+
+    //   if (this.grid.grid[x + dX][y + dY] !== null) {
+    //     mergedPosition = {x: x + dX, y: y + dY};
+    //     obstacleFound = true;
+    //   } else {
+    //     x = x + dX;
+    //     y = y + dY;
+    //     furthestPos = {x: x, y: y};
+    //   }
+    // }
+
+    return (
+      {
+        furthestPosition: furthestPos,
+        mergePosition: mergedPosition
+      }
+    );
   };
 
   Game.prototype.endPosition = function (direction, tile) {
@@ -96,10 +170,10 @@
     }
 
     return nextPosition;
-  }
+  };
 
-  Game.prototype.tileOrder = function (direction) {
-    var tiles = [],
+  Game.prototype.positionOrder = function (direction) {
+    var positions = [],
         grid = this.grid.grid;
 
     switch (direction) {
@@ -108,7 +182,7 @@
         for (var x = 0; x < grid.length; x++) {
           for (var y = 0; y < grid.length; y++) {
             if (grid[x][y] !== null) {
-              tiles.push(grid[x][y]);
+              positions.push({x: x, y: y});
             } 
           }
         }
@@ -119,7 +193,7 @@
         for (var x = this.size - 1; x >= 0; x--) {
           for (var y = 0; y < grid.length; y++) {
             if (grid[x][y] !== null) {
-              tiles.push(grid[x][y]);
+              positions.push({x: x, y: y});
             } 
           }
         }
@@ -130,7 +204,7 @@
         for (var x = this.size - 1; x >= 0; x--) {
           for (var y = 0; y < grid.length; y++) {
             if (grid[y][x] !== null) {
-              tiles.push(grid[y][x]);
+              positions.push({x: y, y: x});
             } 
           }
         }
@@ -141,18 +215,17 @@
         for (var x = 0; x < grid.length; x++) {
           for (var y = 0; y < grid.length; y++) {
             if (grid[y][x] !== null) {
-              tiles.push(grid[y][x]);
+              positions.push({x: y, y: x});
             } 
           }
         }
         break;
     }
 
-    return tiles;
+    return positions;
   };
 
   Game.prototype.render = function() {
-    this.addTile();
     var grid = this.grid.grid;
 
     for (var x = 0; x < grid.length; x++) {

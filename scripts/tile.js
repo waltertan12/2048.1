@@ -7,6 +7,7 @@
     this.y = position.y;
 
     this.value = value;
+    this.merged = false;
   };
 
   Tile.prototype.setValue = function(newValue) {

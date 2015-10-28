@@ -2,7 +2,6 @@
   "use strict";
 
   root.onkeyup = function (e) {
-    console.log(e);
     switch (e.keyCode) {
       // left arrow
       case 37:
