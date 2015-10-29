@@ -26,11 +26,15 @@
   Grid.prototype.initialize = function (size) {
     var grid = [];
 
-    for (var x = 0; x < size; x++) {
-      grid.push([]);
-      for (var y = 0; y < size; y++) {
-        grid[x][y] = null;
+    for (var x = 0, y = 0; 
+         x < size && y < size;
+         y++,
+         x = (y === size) ? x + 1 : x,
+         y = (y === size) ? y = 0 : y) {
+      if (x === 0) {
+        grid.push([]);
       }
+      grid[x][y] = null;
     }
 
     return grid;
@@ -83,26 +87,29 @@
   };
 
   Grid.prototype.each = function (callback) {
-    for (var x = 0; x < this.grid.length; x++) {
-      for (var y = 0; y < this.grid[x].length; y++) {
-        callback(x, y, this.grid[x][y]);
-      }
+    var size = this.grid.length;
+    for (var x = 0, y = 0; 
+         x < size && y < size;
+         y++,
+         x = (y === size) ? x + 1 : x,
+         y = (y === size) ? y = 0 : y) {
+      callback(x, y, this.grid[x][y]);
     }
   };
 
   Grid.prototype.print = function () {
     var string = "";
     console.log("////////////////////////////");
-    for (var i = 0; i < this.grid.length; i++) {
-      for (var j = 0; j < this.grid.length; j++) {
-        if (this.grid[i][j] === null) {
-          string = string + "0 ";
-        } else {
-          string = string + this.grid[i][j].value + " ";
-        }
-      }
-      console.log(string);
-      string = "";
-    }
+    // for (var i = 0; i < this.grid.length; i++) {
+    //   for (var j = 0; j < this.grid.length; j++) {
+    //     if (this.grid[i][j] === null) {
+    //       string = string + "0 ";
+    //     } else {
+    //       string = string + this.grid[i][j].value + " ";
+    //     }
+    //   }
+    //   console.log(string);
+    //   string = "";
+    // }
   };
 })(this);
