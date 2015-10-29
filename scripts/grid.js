@@ -2,9 +2,25 @@
 (function (root) {
   "use strict";
 
-  var Grid = root.Grid = function (size) {
+  var Grid = root.Grid = function (size, grid) {
     this.size = size;
-    this.grid = this.initialize(size);
+    if (typeof grid === "undefined") {
+      this.grid = this.initialize(size);
+    } else {
+      this.grid = this.buildGrid(grid);
+    }
+  };
+
+  Grid.prototype.buildGrid = function (grid) {
+    var newGrid = this.initialize(grid.size);
+
+    grid.each( function (x, y, tile) {
+      if (tile !== null) {
+        newGrid[x][y] = new Tile({x: x, y: y}, tile.value);
+      }
+    })
+
+    return newGrid;
   };
 
   Grid.prototype.initialize = function (size) {
@@ -64,6 +80,14 @@
       x < this.size && 
       y < this.size
     );
+  };
+
+  Grid.prototype.each = function (callback) {
+    for (var x = 0; x < this.grid.length; x++) {
+      for (var y = 0; y < this.grid[x].length; y++) {
+        callback(x, y, this.grid[x][y]);
+      }
+    }
   };
 
   Grid.prototype.print = function () {

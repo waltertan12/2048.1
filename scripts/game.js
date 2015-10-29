@@ -35,9 +35,12 @@
     );
   };
 
-  Game.prototype.addTile = function () {
-    var position = this.grid.randomPosition();
-    this.grid.addTile(position, _INITIAL_VALUE);
+  Game.prototype.addTile = function (grid) {
+    if (typeof grid === "undefined") {
+      grid = this.grid;
+    }
+    var position = grid.randomPosition();
+    grid.addTile(position, _INITIAL_VALUE);
   };
 
   Game.prototype.slide = function (direction) {
@@ -52,10 +55,10 @@
     positions.forEach(function (position) {
       tile = grid.grid[position.x][position.y];
       collisionTile = null;
-      positions = game.furthestPosition(direction, tile);
 
       // does the space still have a tile?
       if (tile !== null) {
+        positions = game.furthestPosition(direction, tile);
         mergePosition = positions.mergePosition;
 
         // Is there merge possibility?
@@ -107,18 +110,23 @@
     }
   };
 
-  Game.prototype.resetTileMerges = function () {
-    for (var x = 0; x < this.grid.grid.length; x++) {
-      for (var y = 0; y < this.grid.grid[x].length; y++) {
-        if (this.grid.grid[x][y] !== null) {
-          this.grid.grid[x][y].merged = false;
+  Game.prototype.resetTileMerges = function (grid) {
+    if (typeof grid === "undefined") {
+      grid = this.grid.grid;
+    }
+    for (var x = 0; x < grid.length; x++) {
+      for (var y = 0; y < grid[x].length; y++) {
+        if (grid[x][y] !== null) {
+          grid[x][y].merged = false;
         }
       }
     }
   };
 
-  Game.prototype.moveTile = function (tile, newPosition) {
-    var grid = this.grid.grid;
+  Game.prototype.moveTile = function (tile, newPosition, grid) {
+    if (typeof grid === "undefined") {
+      grid = this.grid.grid;
+    }
 
     grid[tile.x][tile.y] = null;
     grid[newPosition.x][newPosition.y] = tile;
@@ -130,7 +138,11 @@
     return this.grid.validPosition(nextPosition);
   };
 
-  Game.prototype.furthestPosition = function (direction, tile) {
+  Game.prototype.furthestPosition = function (direction, tile, grid) {
+    if (typeof grid === "undefined") {
+      grid = this.grid;
+    }
+
     var x = tile.x,
         y = tile.y,
         dX = DIRECTIONS[direction].x,
@@ -141,7 +153,7 @@
 
     do {
       if (this.validNextPosition({x: x + dX, y: y + dY}) &&
-          this.grid.grid[x + dX][y + dY] !== null) {
+          grid.grid[x + dX][y + dY] !== null) {
         furthestPos = {x: x, y: y};
         mergedPosition = {x: x + dX, y: y + dY};
         obstacleFound = true;
@@ -245,10 +257,10 @@
             var otherTile = null;
 
             if (this.validNextPosition(position)) {
-              otherTile = this.grid.grid[position.x][position.y];
+              otherTile = grid[position.x][position.y];
             }
 
-            if (otherTile && tile.isMatch(otherTile)) {
+            if (otherTile !== null && tile.isMatch(otherTile)) {
               return true;
             }
           }
@@ -311,5 +323,66 @@
       case 512:
         return "sixteen";
     }
+  };
+
+  Game.prototype.slideAI = function (inputGrid, direction) {
+    var positions = this.positionOrder(direction),
+        grid = new Grid(inputGrid.size, inputGrid),
+        game = this,
+        tileMoved = false,
+        tile, mergePosition, collisionTile;
+
+    game.resetTileMerges(grid);
+
+    positions.forEach(function (position) {
+      tile = grid.grid[position.x][position.y];
+      collisionTile = null;
+
+      // does the space still have a tile?
+      if (tile !== null) {
+        positions = game.furthestPosition(direction, tile, grid);
+        mergePosition = positions.mergePosition;
+
+        // Is there merge possibility?
+        if (mergePosition !== null) {
+          collisionTile = grid.grid[mergePosition.x][mergePosition.y];
+        }
+        
+        // Is there an actual merge?
+        if (!!collisionTile && 
+            !game.comparePositions(position, mergePosition) && 
+            tile.isMatch(collisionTile) &&
+            !collisionTile.merged) {
+
+          var mergedTile = new Tile(mergePosition, tile.value + tile.value);
+          mergedTile.merged = true;
+
+          if (tile.value + tile.value === 2048) {
+            game.won = true;
+          }
+
+          grid.removeTile({x: tile.x, y: tile.y});
+          grid.removeTile(mergePosition);
+          grid.grid[mergePosition.x][mergePosition.y] = mergedTile;
+
+          // game.score = game.score + tile.value + tile.value;
+          tileMoved = true;
+
+        // no merge
+        } else {
+          var endPosition = positions.furthestPosition;
+          game.moveTile(tile, endPosition, grid.grid);
+          if (!game.comparePositions(position, endPosition)) {
+            tileMoved = true;
+          }
+        }
+      }
+    });
+
+    if (tileMoved) {
+      game.addTile(grid);
+    }
+
+    return [grid, tileMoved];
   };
 })(this);

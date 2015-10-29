@@ -11,14 +11,14 @@
   <script type="text/javascript" src="scripts/tile.js"></script>
   <script type="text/javascript" src="scripts/game.js"></script>
   <script type="text/javascript" src="scripts/key_listener.js"></script>
-
+  <script type="text/javascript" src="scripts/ai.js"></script>
 
   <script type="text/javascript" >
-    game = null;
+    browserGame = null;
     window.addEventListener('DOMContentLoaded', function (e) {
-      game = new Game(4);
-      game.addTile();
-      game.render();
+      browserGame = new Game(4);
+      browserGame.addTile();
+      browserGame.render();
     }, false)
   </script>
 </head>
