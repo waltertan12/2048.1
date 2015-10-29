@@ -5,24 +5,24 @@
     switch (e.keyCode) {
       // left arrow
       case 37:
-        browserGame.slide("down");
+        game.slide("down");
         break;
       // up arrow
       case 38:
-        browserGame.slide("left");
+        game.slide("left");
 
         break;
       // right arrow
       case 39:
-        browserGame.slide("up");
+        game.slide("up");
 
         break;
       // down arrow
       case 40:
-        browserGame.slide("right");
+        game.slide("right");
 
         break;
     }
-    browserGame.render();
+    game.render();
   };
 })(this);

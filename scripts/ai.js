@@ -16,50 +16,125 @@
     this.interval = 500;
   };
 
-  AI.prototype.permute = function (grid, depth) {
-    var best = [Number.MIN_VALUE, "left"];
+  // Minimax
+  AI.prototype.permute = function (grid, depth, maxPlayer, min, max) {
+    var bestMove = [0, "left"];
     if (depth <= 0) {
       return this.scoring(grid);
     }
-    // if (option === "Use Grid Options") {
-    //   var options = this.buildGridOptions(grid);
+    var directions = ["up", "down", "left", "right"];
+    switch (maxPlayer) {
+      case true:
+        for (var i = 0; i < directions.length; i++) {
+          var newGridState = this.game.slideAI(grid, directions[i]);
+          var newGrid = newGridState[0];
+          var tileMoved = newGridState[1];
 
-    //   for (var i = 0; i < options.length; i++) {
-    //     var nextGrid = options[i];
-    //     var scoreAndDirection = this.permute(nextGrid, depth - 1, option);
-    //     if (best[0] < scoreAndDirection[0]) {
-    //       best[0] = scoreAndDirection[0];
-    //       best[1] = scoreAndDirection[1];
-    //     }
-    //   }
+          if (!tileMoved) { continue; }
 
-    //   return best;
-    // }
-    // if (option === "Use SlideAI") {
-      var directions = ["up", "down", "left", "right"];
+          var scoreAndDirection = this.permute(
+            newGrid, 
+            depth - 1, 
+            false, 
+            min, 
+            max
+          );
 
-      for (var i = 0; i < directions.length; i++) {
-        var newGridState = this.game.slideAI(grid, directions[i]);
-        var newGrid = newGridState[0];
-        var tileMoved = newGridState[1];
-        if (!tileMoved) { continue; }
-        
-        var scoreAndDirection = this.permute(newGrid, depth - 1);
-        var maximum = scoreAndDirection[0];
+          max = scoreAndDirection[0];
 
-        console.log("score and direction");
-        console.log(scoreAndDirection);
+          if (max < min) {
+            return bestMove;
+          }
 
-        if (maximum >= best[0]) {
-          best = [maximum, directions[i]];
+          if (max >= bestMove[0]) {
+            bestMove = [max, directions[i]];
+          }
         }
-      }
-      return best;
-    // }
+        return bestMove;
+
+      case false:
+        var options = this.buildGridOptions(grid);
+
+        for (var i = 0; i < options.length; i++) {
+          var nextGrid = options[i];
+          var scoreAndDirection = this.permute( nextGrid, 
+                                                depth - 1,
+                                                true,
+                                                min,
+                                                max );
+
+          min = scoreAndDirection[0];
+
+          if (max < min) {
+            return bestMove;
+          }
+
+          bestMove[0] = bestMove[0] + min;
+        }
+        return bestMove;
+    }
   };
 
-  AI.prototype.getNextMove = function(grid, depth) {
-    var move = this.permute(grid, depth);
+  // Expectimax
+  AI.prototype.permuteV2 = function (grid, depth, maxPlayer) {
+    var bestMove = [0, "left"];
+
+    if (depth <= 0) {
+      return this.scoring(grid);
+    }
+    
+    switch (maxPlayer) {
+      case true:
+        var directions = ["up", "down", "left", "right"];
+
+        for (var i = 0; i < directions.length; i++) {
+          var newGridState = this.game.slideAI(grid, directions[i]);
+          var newGrid = newGridState[0];
+          var tileMoved = newGridState[1];
+
+          if (!tileMoved) { continue; }
+
+          var scoreAndDirection = this.permuteV2( newGrid, 
+                                                  depth - 1, 
+                                                  false );
+
+          if (scoreAndDirection[0] >= bestMove[0]) {
+            bestMove = [scoreAndDirection[0], directions[i]];
+          }
+        }
+        return bestMove;
+
+      // Return average of each child node
+      case false:
+
+        var options = this.buildGridOptions(grid);
+        var numMovesAvailable = grid.availablePositions().length;
+
+        for (var i = 0; i < options.length; i++) {
+          var nextGrid = options[i];
+          var scoreAndDirection = this.permuteV2( nextGrid, 
+                                                  depth - 1,
+                                                  true);
+
+          bestMove[0] = bestMove[0] + 
+                        (scoreAndDirection[0] * (1 / numMovesAvailable));
+        }
+        return bestMove;
+    }
+  };
+
+  AI.prototype.getNextMove = function(grid, depth, option) {
+    var move;
+
+    switch (option) {
+      case 1:
+        move = this.permute(grid, depth, true, Number.MIN_VALUE, Number.MAX_VALUE);
+        break;
+      case 2:
+        move = this.permuteV2(grid, depth, true);
+        break;
+    }
+
     return move[1];
   };
 
@@ -147,16 +222,15 @@
     return [maxScore, direction];
   };
 
-  AI.prototype.iterate = function () {
-    var newGrid = new Grid(this.game.grid.size, this.game.grid);
-    var nextMove = this.getNextMove(newGrid, 4);
+  AI.prototype.iterate = function (depth, option) {
+    var nextMove = this.getNextMove(this.game.grid, depth, option);
     this.game.slide(nextMove);
     this.game.render();
   };
 
-  AI.prototype.run = function () {
+  AI.prototype.run = function (depth, option) {
     setInterval(function () {
-      this.iterate();
+      this.iterate(depth, option);
     }.bind(this), this.interval)
   }
 })(this);

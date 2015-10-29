@@ -20,7 +20,7 @@
   };
 
   Game.prototype.restart = function () {
-    this.grid = new Grid(4);
+    this.grid = new Grid(this.grid.size);
     this.score = 0;
     this.addTile();
     this.addTile();
@@ -378,10 +378,6 @@
         }
       }
     });
-
-    if (tileMoved) {
-      game.addTile(grid);
-    }
 
     return [grid, tileMoved];
   };
