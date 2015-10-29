@@ -42,12 +42,15 @@
 
   Grid.prototype.availablePositions = function () {
     var availablePositions = [];
+    var size = this.size;
 
-    for (var x = 0; x < this.grid.length; x++) {
-      for (var y = 0; y < this.grid[x].length; y++) {
-        if (this.grid[x][y] === null) {
-          availablePositions.push({x: x, y: y});
-        }
+    for (var x = 0, y = 0; 
+         x < size && y < size;
+         y++,
+         x = (y === size) ? x + 1 : x,
+         y = (y === size) ? y = 0 : y) {
+      if (this.grid[x][y] === null) {
+        availablePositions.push({x: x, y: y});
       }
     }
 
@@ -66,12 +69,10 @@
     }
 
     this.grid[position.x][position.y] = new Tile(position, value);
-    this.print();
   };
 
   Grid.prototype.removeTile = function (position) {
     this.grid[position.x][position.y] = null;
-    this.print();
   };
 
   Grid.prototype.validPosition = function (position) {
@@ -87,7 +88,7 @@
   };
 
   Grid.prototype.each = function (callback) {
-    var size = this.grid.length;
+    var size = this.size;
     for (var x = 0, y = 0; 
          x < size && y < size;
          y++,
@@ -95,21 +96,5 @@
          y = (y === size) ? y = 0 : y) {
       callback(x, y, this.grid[x][y]);
     }
-  };
-
-  Grid.prototype.print = function () {
-    var string = "";
-    console.log("////////////////////////////");
-    // for (var i = 0; i < this.grid.length; i++) {
-    //   for (var j = 0; j < this.grid.length; j++) {
-    //     if (this.grid[i][j] === null) {
-    //       string = string + "0 ";
-    //     } else {
-    //       string = string + this.grid[i][j].value + " ";
-    //     }
-    //   }
-    //   console.log(string);
-    //   string = "";
-    // }
   };
 })(this);

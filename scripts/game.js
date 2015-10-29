@@ -17,13 +17,15 @@
     this.over = false;
     this.won = false;
     this.grid = new Grid(size);
+    this.addTile();
+    this.addTile();
   };
 
   Game.prototype.restart = function () {
     this.grid = new Grid(this.grid.size);
     this.score = 0;
-    this.addTile();
-    this.addTile();
+    this.over = false;
+    this.won = false;
 
     this.render();
   };
@@ -125,14 +127,6 @@
         grid[x][y].merged = false;
       }
     }
-
-    // for (var x = 0; x < grid.length; x++) {
-    //   for (var y = 0; y < grid[x].length; y++) {
-    //     if (grid[x][y] !== null) {
-    //       grid[x][y].merged = false;
-    //     }
-    //   }
-    // }
   };
 
   Game.prototype.moveTile = function (tile, newPosition, grid) {
@@ -218,24 +212,10 @@
             positions.push({x: x, y: y});
           }
         }
-        // for (var x = 0; x < grid.length; x++) {
-        //   for (var y = 0; y < grid.length; y++) {
-        //     if (grid[x][y] !== null) {
-        //       positions.push({x: x, y: y});
-        //     } 
-        //   }
-        // }
         break;
 
       // check all tiles on row this.grid.grid[size-1][] first
       case "right":
-        // for (var x = this.size - 1; x >= 0; x--) {
-        //   for (var y = 0; y < grid.length; y++) {
-        //     if (grid[x][y] !== null) {
-        //       positions.push({x: x, y: y});
-        //     } 
-        //   }
-        // }
         for (var x = size - 1, y = 0; 
          x >= 0 && y < size;
          y++,
@@ -259,13 +239,6 @@
             positions.push({x: y, y: x});
           }
         }
-        // for (var x = this.size - 1; x >= 0; x--) {
-        //   for (var y = 0; y < grid.length; y++) {
-        //     if (grid[y][x] !== null) {
-        //       positions.push({x: y, y: x});
-        //     } 
-        //   }
-        // }
         break;
 
       // check all tiles on col this.grid.grid[][0] first
@@ -279,13 +252,6 @@
             positions.push({x: y, y: x});
           }
         }
-        // for (var x = 0; x < grid.length; x++) {
-        //   for (var y = 0; y < grid.length; y++) {
-        //     if (grid[y][x] !== null) {
-        //       positions.push({x: y, y: x});
-        //     } 
-        //   }
-        // }
         break;
     }
 
@@ -295,13 +261,16 @@
   Game.prototype.mergeAvailable = function () {
     var grid = this.grid.grid,
         size = grid.length,
-        directions = ["up", "down", "left", "right"];
+        directions = ["up", "down", "left", "right"],
+        tile;
 
     for (var x = 0, y = 0; 
          x < size && y < size;
          y++,
          x = (y === size) ? x + 1 : x,
          y = (y === size) ? y = 0 : y) {
+      
+      tile = grid[x][y];
 
       if (tile !== null) {
         for (var i = 0; i < directions.length; i++) {
@@ -321,30 +290,6 @@
       }
 
     }
-
-
-    // for (var x = 0; x < grid.length; x ++) {
-    //   for (var i = 0; i < grid[x].length; i++) {
-    //     var tile = grid[x][i];
-
-    //     if (tile !== null) {
-    //       for (var i = 0; i < directions.length; i++) {
-    //         var dX = DIRECTIONS[directions[i]].x;
-    //         var dY = DIRECTIONS[directions[i]].y;
-    //         var position = { x: tile.x + dX, y: tile.y + dY };
-    //         var otherTile = null;
-
-    //         if (this.validNextPosition(position)) {
-    //           otherTile = grid[position.x][position.y];
-    //         }
-
-    //         if (otherTile !== null && tile.isMatch(otherTile)) {
-    //           return true;
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
     return false;
   };
 
@@ -376,13 +321,18 @@
     score.innerHTML = "<h1>Score: " + this.score+ "</h1>";
     var gameMessage = document.getElementById("game-message") ;
 
-    // if (this.isOver()) {
-    //   gameMessage.innerHTML = "<h1>You lose :(</h1><button class='btn btn-primary' onClick='game.restart()'>Restart</button><br><br>";
-    //   gameMessage.className = "show-messages"
-    // } else {
-    //   gameMessage.innerHTML = "";
-    //   gameMessage.className = "hide-messages"
-    // }
+    if (this.isOver()) {
+      this.over = true;
+      gameMessage.innerHTML = "<h1>You lose :(</h1><button class='btn btn-primary' onClick='game.restart()'>Restart</button><br><br>";
+      gameMessage.className = "show-messages"
+    } else if (this.won){
+      gameMessage.innerHTML = "<h1>You win!:(</h1><button class='btn btn-primary' onClick='game.restart()'>Restart</button><br><br>";
+      gameMessage.className = "show-messages"
+    } 
+    else {
+      gameMessage.innerHTML = "";
+      gameMessage.className = "hide-messages"
+    }
   };
 
   Game.prototype.classGenerator = function (value) {
@@ -406,6 +356,16 @@
       case 256:
         return "eight";
       case 512:
+        return "sixteen";
+      case 1024:
+        return "one";
+      case 2048:
+        return "two";
+      case 4096:
+        return "four";
+      case 8192:
+        return "eight";
+      case 16384:
         return "sixteen";
     }
   };

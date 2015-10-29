@@ -14,12 +14,24 @@
   <script type="text/javascript" src="scripts/ai.js"></script>
 
   <script type="text/javascript" >
-    game = null;
+    // Initialize game
+    var game, runAI, stopAI;
     window.addEventListener('DOMContentLoaded', function (e) {
       game = new Game(4);
-      game.addTile();
+      var ai = new AI(game);
+
+      // Run AI with expectiminimax with a depth of 7
+      runAI = function () {
+        ai.run(7,2);
+      };
+
+      stopAI = function () {
+        ai.stop();
+      };
+
       game.render();
     }, false)
+
   </script>
 </head>
 <body>
@@ -28,12 +40,21 @@
     <div class="container description">
       <h3>Instructions:</h3>
         <p>
-          Join the numbers and get to the 2048 tile!
+          Join the numbers and get to the 2048 tile! 
         </p>
       <h3>How To Play</h3>
         <p>
           Use the arrow keys to slide the tiles across the board. When two tiles with the same value touch, they merge!
         </p>
+      <div id="ai-options">
+        <h3>Don't feel like playing? </h3>
+          <p>
+            Watch the AI take on 2048.1!
+          </p>
+          <button class="btn btn-success" onClick="window.runAI()"/>
+            Go, computer, go!
+          </button><br/><br/>
+      </div>
     </div>
     <div id="score"></div>
     <div id="game-message"></div>

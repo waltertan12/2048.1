@@ -14,6 +14,7 @@
     }
     this.game = game;
     this.interval = 500;
+    this.aiInterval = null;
   };
 
   // Minimax
@@ -228,8 +229,35 @@
     this.game.render();
   };
 
+  AI.prototype.stop = function () {
+    var aiOptionDOMObject = document.getElementById("ai-options");
+    aiOptionDOMObject.innerHTML = (
+      "<h3>Don't feel like playing? </h3>" +
+          "<p>" +
+            "Watch the AI take on 2048.1!" +
+          "</p>" +
+          "<button class='btn btn-success' onClick='window.runAI()'/>" +
+            "Go, computer, go!" +
+          "</button><br/><br/>"
+    );
+    root.clearInterval(this.aiInterval);
+  };
+
   AI.prototype.run = function (depth, option) {
-    setInterval(function () {
+    var aiOptionDOMObject = document.getElementById("ai-options");
+    aiOptionDOMObject.innerHTML = (
+      "<h3>Afraid of computers taking over the world?</h3>" +
+        "<p>" +
+          "Stop the AI!" +
+        "</p>" +
+        "<button class='btn btn-danger' onClick='window.stopAI()'/>" +
+          "Prevent the rise of the machines!" +
+        "</button><br/><br/>"
+    );
+    this.aiInterval = setInterval(function () {
+      if (this.game.over ) {
+        clearInterval(aiInterval);
+      }
       this.iterate(depth, option);
     }.bind(this), this.interval)
   }
