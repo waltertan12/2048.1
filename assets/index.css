@@ -27,8 +27,16 @@ body {
   text-align: center;
   height: 125px;
   width: 125px;
-  font-size: 50px;
+  font-size: 45px;
   background-color: lightgray;
+}
+
+.tile > p {
+  transform: translateY(25px);
+}
+
+.tile:hover {
+  opacity: 0.8;
 }
 
 .clearfix:after {

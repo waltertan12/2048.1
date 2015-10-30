@@ -23,6 +23,8 @@
 
   Game.prototype.restart = function () {
     this.grid = new Grid(this.grid.size);
+    this.addTile();
+    this.addTile();
     this.score = 0;
     this.over = false;
     this.won = false;
@@ -313,7 +315,7 @@
         row.children[y].className = "tile";
       } else {
         className = this.classGenerator(grid[x][y].value);
-        row.children[y].innerHTML = "" + grid[x][y].value;
+        row.children[y].innerHTML = "<p>" + grid[x][y].value + "</p>";
         row.children[y].className = "tile " + className;
       }
     }
@@ -321,12 +323,12 @@
     score.innerHTML = "<h1>Score: " + this.score+ "</h1>";
     var gameMessage = document.getElementById("game-message") ;
 
-    if (this.isOver()) {
+    if (this.won) {
+      gameMessage.innerHTML = "<h1>You win :)</h1><button class='btn btn-primary' onClick='game.restart()'>Restart</button><br><br>";
+      gameMessage.className = "show-messages"
+    } else if (this.isOver()){
       this.over = true;
       gameMessage.innerHTML = "<h1>You lose :(</h1><button class='btn btn-primary' onClick='game.restart()'>Restart</button><br><br>";
-      gameMessage.className = "show-messages"
-    } else if (this.won){
-      gameMessage.innerHTML = "<h1>You win!:(</h1><button class='btn btn-primary' onClick='game.restart()'>Restart</button><br><br>";
       gameMessage.className = "show-messages"
     } 
     else {
