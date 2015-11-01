@@ -373,7 +373,7 @@
 
         if (grid[x][y] === null) {
           row.children[y].innerHTML = "&nbsp;";
-          row.children[y].className = "tile tile-" + x +"-" + y;
+          row.children[y].className = "tile tile-new low-z tile-" + x +"-" + y;
         } else {
           className = game.classGenerator(grid[x][y].value);
           if (grid[x][y].previousPosition !== null) {
@@ -382,11 +382,9 @@
                                         "-" +
                                         grid[x][y].previousPosition.y + 
                                         " " +
-                                        className;
+                                        className + " transition";
           } else if (grid[x][y].merged) {
-            row.children[y].className = "tile tile-merged tile-" + x +"-" + y + " " + className;
-          } else {
-            row.children[y].className = "tile tile-new tile-" + x +"-" + y + " " + className; 
+            row.children[y].className = "tile tile-merged tile-" + x +"-" + y + " " + className + " transition";
           }
 
           (function (row, x, y) {
@@ -399,6 +397,8 @@
                 row.children[y].className = "tile tile-" + 
                                             x +"-" + y + " " + 
                                             className;
+              } else {
+                row.children[y].className = "tile tile-new tile-" + x +"-" + y + " " + className; 
               }
             }, 100);
           })(row, x, y);

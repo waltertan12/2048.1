@@ -79,10 +79,11 @@ body {
   border-radius: 5px;
   position: relative;
   margin: 0 auto;
+  background-color: lightgray;
+  z-index: -100;
 }
 
 .tile {
-  /*float: left;*/
   position: absolute;
   top: 0;
   left: 0;
@@ -93,8 +94,10 @@ body {
   height: 125px;
   width: 125px;
   font-size: 45px;
-  background-color: lightgray;
-  transition: all 100ms ease;
+  background-color: transparent;
+  transition: all 0.3s ease;
+  z-index: -10;
+  /*transition-duration: 1s;*/
 }
 
 .tile > p {
@@ -103,6 +106,14 @@ body {
 
 .tile:hover {
   opacity: 0.8;
+}
+
+.transition {
+  z-index: 10;
+}
+
+.tile.tile-new.low-z {
+  z-index: -10;
 }
 
 .tile.tile-0-0 {
@@ -226,9 +237,9 @@ body {
   animation-fill-mode: backwards; }
 }
 .tile-new {
- -webkit-animation: appear 0.2s ease 0.1s;
-  -moz-animation: appear 0.2s ease 0.1s;
-  animation: appear 0.2s ease 0.1s;
+ -webkit-animation: appear 0.5s ease 0.1s;
+  -moz-animation: appear 0.5s ease 0.1s;
+  animation: appear 0.5s ease 0.1s;
   -webkit-animation-fill-mode: backwards;
   -moz-animation-fill-mode: backwards;
   animation-fill-mode: backwards;
