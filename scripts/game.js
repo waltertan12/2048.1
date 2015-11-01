@@ -121,23 +121,23 @@
     }
     var size = grid.length;
 
-    // for (var x = 0; x < grid.length; x++) {
-    //   for (var y = 0; y < grid[x].length; y++) {
-    //     if (grid[x][y] !== null) {
-    //       grid[x][y].merged = false;
-    //     }
-    //   }
-    // }
-
-    for (var x = 0, y = 0; 
-         x < size && y < size;
-         y++,
-         x = (y === size) ? x + 1 : x,
-         y = (y === size) ? y = 0 : y) {
-      if (grid[x][y] !== null) {
-        grid[x][y].merged = false;
+    for (var x = 0; x < grid.length; x++) {
+      for (var y = 0; y < grid[x].length; y++) {
+        if (grid[x][y] !== null) {
+          grid[x][y].merged = false;
+        }
       }
     }
+
+    // for (var x = 0, y = 0; 
+    //      x < size && y < size;
+    //      y++,
+    //      x = (y === size) ? x + 1 : x,
+    //      y = (y === size) ? y = 0 : y) {
+    //   if (grid[x][y] !== null) {
+    //     grid[x][y].merged = false;
+    //   }
+    // }
   };
 
   Game.prototype.moveTile = function (tile, newPosition, grid) {
@@ -216,83 +216,83 @@
     switch (direction) {
       // check all tiles on row this.grid.grid[0][] first
       case "left":
-        // for (var x = 0; x < size; x++) {
-        //   for (var y = 0; y < size; y++) {
-        //     if (grid[x][y] !== null) {
-        //       positions.push({x: x, y: y});
-        //     } 
-        //   }
-        // }
-        for (var x = 0, y = 0; 
-         x < size && y < size;
-         y++,
-         x = (y === size) ? x + 1 : x,
-         y = (y === size) ? y = 0 : y) {
-          if (grid[x][y] !== null) {
-            positions.push({x: x, y: y});
+        for (var x = 0; x < size; x++) {
+          for (var y = 0; y < size; y++) {
+            if (grid[x][y] !== null) {
+              positions.push({x: x, y: y});
+            } 
           }
         }
+        // for (var x = 0, y = 0; 
+        //  x < size && y < size;
+        //  y++,
+        //  x = (y === size) ? x + 1 : x,
+        //  y = (y === size) ? y = 0 : y) {
+        //   if (grid[x][y] !== null) {
+        //     positions.push({x: x, y: y});
+        //   }
+        // }
         break;
 
       // check all tiles on row this.grid.grid[size-1][] first
       case "right":
-        // for (var x = this.size - 1; x >= 0; x--) {
-        //   for (var y = 0; y < grid.length; y++) {
-        //     if (grid[x][y] !== null) {
-        //       positions.push({x: x, y: y});
-        //     }
-        //   }
-        // } 
-        for (var x = size - 1, y = 0; 
-         x >= 0 && y < size;
-         y++,
-         x = (y === size) ? x - 1 : x,
-         y = (y === size) ? y = 0 : y) {
-          if (grid[x][y] !== null) {
-            positions.push({x: x, y: y});
+        for (var x = this.size - 1; x >= 0; x--) {
+          for (var y = 0; y < grid.length; y++) {
+            if (grid[x][y] !== null) {
+              positions.push({x: x, y: y});
+            }
           }
-        }
+        } 
+        // for (var x = size - 1, y = 0; 
+        //  x >= 0 && y < size;
+        //  y++,
+        //  x = (y === size) ? x - 1 : x,
+        //  y = (y === size) ? y = 0 : y) {
+        //   if (grid[x][y] !== null) {
+        //     positions.push({x: x, y: y});
+        //   }
+        // }
         break;
 
       // check all tiles on col this.grid.grid[][size-1] first
       case "up":
         // CHECK ON THIS ONE
-        // for (var x = this.size - 1; x >= 0; x--) {
-        //   for (var y = 0; y < grid.length; y++) {
-        //     if (grid[y][x] !== null) {
-        //       positions.push({x: y, y: x});
-        //     } 
-        //   }
-        // }
-        for (var x = size - 1, y = 0; 
-         x >= 0 && y < size;
-         y++,
-         x = (y === size) ? x - 1 : x,
-         y = (y === size) ? y = 0 : y) {
-          if (grid[y][x] !== null) {
-            positions.push({x: y, y: x});
+        for (var x = this.size - 1; x >= 0; x--) {
+          for (var y = 0; y < grid.length; y++) {
+            if (grid[y][x] !== null) {
+              positions.push({x: y, y: x});
+            } 
           }
         }
+        // for (var x = size - 1, y = 0; 
+        //  x >= 0 && y < size;
+        //  y++,
+        //  x = (y === size) ? x - 1 : x,
+        //  y = (y === size) ? y = 0 : y) {
+        //   if (grid[y][x] !== null) {
+        //     positions.push({x: y, y: x});
+        //   }
+        // }
         break;
 
       // check all tiles on col this.grid.grid[][0] first
       case "down":
-        // for (var x = 0; x < size; x++) {
-        //   for (var y = 0; y < size; y++) {
-        //     if (grid[y][x] !== null) {
-        //       positions.push({x: y, y: x});
-        //     } 
-        //   }
-        // }
-        for (var x = 0, y = 0; 
-         x < size && y < size;
-         y++,
-         x = (y === size) ? x + 1 : x,
-         y = (y === size) ? y = 0 : y) {
-          if (grid[y][x] !== null) {
-            positions.push({x: y, y: x});
+        for (var x = 0; x < size; x++) {
+          for (var y = 0; y < size; y++) {
+            if (grid[y][x] !== null) {
+              positions.push({x: y, y: x});
+            } 
           }
         }
+        // for (var x = 0, y = 0; 
+        //  x < size && y < size;
+        //  y++,
+        //  x = (y === size) ? x + 1 : x,
+        //  y = (y === size) ? y = 0 : y) {
+        //   if (grid[y][x] !== null) {
+        //     positions.push({x: y, y: x});
+        //   }
+        // }
         break;
     }
 
@@ -305,54 +305,54 @@
         directions = ["up", "down", "left", "right"],
         tile;
 
-    // for (var x = 0; x < size; x ++) {
-    //   for (var y = 0; y < size; y++) {
-    //     var tile = grid[x][y];
+    for (var x = 0; x < size; x ++) {
+      for (var y = 0; y < size; y++) {
+        var tile = grid[x][y];
 
-    //     if (tile !== null) {
-    //       for (var i = 0; i < directions.length; i++) {
-    //         var dX = DIRECTIONS[directions[i]].x;
-    //         var dY = DIRECTIONS[directions[i]].y;
-    //         var position = { x: tile.x + dX, y: tile.y + dY };
-    //         var otherTile = null;
+        if (tile !== null) {
+          for (var i = 0; i < directions.length; i++) {
+            var dX = DIRECTIONS[directions[i]].x;
+            var dY = DIRECTIONS[directions[i]].y;
+            var position = { x: tile.x + dX, y: tile.y + dY };
+            var otherTile = null;
 
-    //         if (this.validNextPosition(position)) {
-    //           otherTile = grid[position.x][position.y];
-    //         }
+            if (this.validNextPosition(position)) {
+              otherTile = grid[position.x][position.y];
+            }
 
-    //         if (otherTile !== null && tile.isMatch(otherTile)) {
-    //           return true;
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-
-    for (var x = 0, y = 0; 
-         x < size && y < size;
-         y++,
-         x = (y === size) ? x + 1 : x,
-         y = (y === size) ? y = 0 : y) {
-      
-      tile = grid[x][y];
-
-      if (tile !== null) {
-        for (var i = 0; i < directions.length; i++) {
-          var dX = DIRECTIONS[directions[i]].x;
-          var dY = DIRECTIONS[directions[i]].y;
-          var position = { x: tile.x + dX, y: tile.y + dY };
-          var otherTile = null;
-
-          if (this.validNextPosition(position)) {
-            otherTile = grid[position.x][position.y];
-          }
-
-          if (otherTile !== null && tile.isMatch(otherTile)) {
-            return true;
+            if (otherTile !== null && tile.isMatch(otherTile)) {
+              return true;
+            }
           }
         }
       }
     }
+
+    // for (var x = 0, y = 0; 
+    //      x < size && y < size;
+    //      y++,
+    //      x = (y === size) ? x + 1 : x,
+    //      y = (y === size) ? y = 0 : y) {
+      
+    //   tile = grid[x][y];
+
+    //   if (tile !== null) {
+    //     for (var i = 0; i < directions.length; i++) {
+    //       var dX = DIRECTIONS[directions[i]].x;
+    //       var dY = DIRECTIONS[directions[i]].y;
+    //       var position = { x: tile.x + dX, y: tile.y + dY };
+    //       var otherTile = null;
+
+    //       if (this.validNextPosition(position)) {
+    //         otherTile = grid[position.x][position.y];
+    //       }
+
+    //       if (otherTile !== null && tile.isMatch(otherTile)) {
+    //         return true;
+    //       }
+    //     }
+    //   }
+    // }
     return false;
   };
 
