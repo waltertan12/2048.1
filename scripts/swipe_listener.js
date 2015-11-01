@@ -3,16 +3,18 @@
     this.start = null;
     this.end = null;
 
-    root.addEventListener("mousedown", 
+    root.addEventListener("touchstart", 
       function (e) {
+        var t = e.touches[0]
         console.log(e);
-        this.start = {x: e.clientX, y: e.clientY, time: Date.now() };
+        this.start = {x: t.clientX, y: t.clientY, time: Date.now() };
     }.bind(this), false);
 
-    root.addEventListener("mouseup", 
+    root.addEventListener("touchend", 
       function (e) {
         console.log(e);
-        this.end = {x: e.clientX, y: e.clientY, time: Date.now() };
+        var t = e.touches[0]
+        this.end = {x: t.clientX, y: t.clientY, time: Date.now() };
         this.detectSwipe();
     }.bind(this), false);
   };
@@ -37,10 +39,10 @@
     } else if (move.x < 0 && Math.abs(move.y) < 50) {
       console.log("Swipe left");
       game.slide("down");
-    } else if (move.y > 0) {
+    } else if (move.y < 0) {
       console.log("Swipe up");
       game.slide("left");
-    } else if (move.y < 0) {
+    } else if (move.y > 0) {
       console.log("Swipe down");
       game.slide("right");
     }
