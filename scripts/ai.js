@@ -10,10 +10,10 @@
 
   var AI = root.AI = function(game, interval) {
     if (typeof interval === "undefined") {
-      interval = 500;
+      interval = 1000;
     }
     this.game = game;
-    this.interval = 500;
+    this.interval = interval;
     this.aiInterval = null;
   };
 
@@ -258,7 +258,9 @@
       if (this.game.over ) {
         clearInterval(aiInterval);
       }
+      var start = Date.now();
       this.iterate(depth, option);
+      console.log("Time to execute: " + (Date.now() - start));
     }.bind(this), this.interval)
   }
 })(this);

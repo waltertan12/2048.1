@@ -78,6 +78,7 @@
 
           var mergedTile = new Tile(mergePosition, tile.value + tile.value);
           mergedTile.merged = true;
+          mergedTile.previousPosition = position;
 
           if (tile.value + tile.value === 2048) {
             game.won = true;
@@ -120,6 +121,14 @@
     }
     var size = grid.length;
 
+    // for (var x = 0; x < grid.length; x++) {
+    //   for (var y = 0; y < grid[x].length; y++) {
+    //     if (grid[x][y] !== null) {
+    //       grid[x][y].merged = false;
+    //     }
+    //   }
+    // }
+
     for (var x = 0, y = 0; 
          x < size && y < size;
          y++,
@@ -135,6 +144,8 @@
     if (typeof grid === "undefined") {
       grid = this.grid.grid;
     }
+
+    tile.previousPosition = tile.position;
 
     grid[tile.x][tile.y] = null;
     grid[newPosition.x][newPosition.y] = tile;
@@ -205,6 +216,13 @@
     switch (direction) {
       // check all tiles on row this.grid.grid[0][] first
       case "left":
+        // for (var x = 0; x < size; x++) {
+        //   for (var y = 0; y < size; y++) {
+        //     if (grid[x][y] !== null) {
+        //       positions.push({x: x, y: y});
+        //     } 
+        //   }
+        // }
         for (var x = 0, y = 0; 
          x < size && y < size;
          y++,
@@ -218,6 +236,13 @@
 
       // check all tiles on row this.grid.grid[size-1][] first
       case "right":
+        // for (var x = this.size - 1; x >= 0; x--) {
+        //   for (var y = 0; y < grid.length; y++) {
+        //     if (grid[x][y] !== null) {
+        //       positions.push({x: x, y: y});
+        //     }
+        //   }
+        // } 
         for (var x = size - 1, y = 0; 
          x >= 0 && y < size;
          y++,
@@ -232,6 +257,13 @@
       // check all tiles on col this.grid.grid[][size-1] first
       case "up":
         // CHECK ON THIS ONE
+        // for (var x = this.size - 1; x >= 0; x--) {
+        //   for (var y = 0; y < grid.length; y++) {
+        //     if (grid[y][x] !== null) {
+        //       positions.push({x: y, y: x});
+        //     } 
+        //   }
+        // }
         for (var x = size - 1, y = 0; 
          x >= 0 && y < size;
          y++,
@@ -245,6 +277,13 @@
 
       // check all tiles on col this.grid.grid[][0] first
       case "down":
+        // for (var x = 0; x < size; x++) {
+        //   for (var y = 0; y < size; y++) {
+        //     if (grid[y][x] !== null) {
+        //       positions.push({x: y, y: x});
+        //     } 
+        //   }
+        // }
         for (var x = 0, y = 0; 
          x < size && y < size;
          y++,
@@ -265,6 +304,29 @@
         size = grid.length,
         directions = ["up", "down", "left", "right"],
         tile;
+
+    // for (var x = 0; x < size; x ++) {
+    //   for (var y = 0; y < size; y++) {
+    //     var tile = grid[x][y];
+
+    //     if (tile !== null) {
+    //       for (var i = 0; i < directions.length; i++) {
+    //         var dX = DIRECTIONS[directions[i]].x;
+    //         var dY = DIRECTIONS[directions[i]].y;
+    //         var position = { x: tile.x + dX, y: tile.y + dY };
+    //         var otherTile = null;
+
+    //         if (this.validNextPosition(position)) {
+    //           otherTile = grid[position.x][position.y];
+    //         }
+
+    //         if (otherTile !== null && tile.isMatch(otherTile)) {
+    //           return true;
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     for (var x = 0, y = 0; 
          x < size && y < size;
@@ -290,33 +352,57 @@
           }
         }
       }
-
     }
     return false;
   };
 
   Game.prototype.render = function() {
-    var grid = this.grid.grid,
+    var game = this,
+        grid = this.grid.grid,
         size = grid.length,
         score = document.getElementById("score"),
         row, className;
 
-    for (var x = 0, y = 0; 
-         x < size && y < size;
-         y++,
-         x = (y === size) ? x + 1 : x,
-         y = (y === size) ? y = 0 : y) {
-      if (y === 0) {
-        row = document.getElementById("row-" + x);
-      }
+    for (var x = 0; x < size; x ++) {
+      for (var y = 0; y < size; y++) {
+        if (y === 0) {
+          row = document.getElementById("row-" + x);
+        }
 
-      if (grid[x][y] === null) {
-        row.children[y].innerHTML = "&nbsp;";
-        row.children[y].className = "tile";
-      } else {
-        className = this.classGenerator(grid[x][y].value);
-        row.children[y].innerHTML = "<p>" + grid[x][y].value + "</p>";
-        row.children[y].className = "tile " + className;
+
+
+        if (grid[x][y] === null) {
+          row.children[y].innerHTML = "&nbsp;";
+          row.children[y].className = "tile tile-" + x +"-" + y;
+        } else {
+          className = game.classGenerator(grid[x][y].value);
+          if (grid[x][y].previousPosition !== null) {
+            row.children[y].className = "tile tile-" + 
+                                        grid[x][y].previousPosition.x +
+                                        "-" +
+                                        grid[x][y].previousPosition.y + 
+                                        " " +
+                                        className;
+          } else if (grid[x][y].merged) {
+            row.children[y].className = "tile tile-merged tile-" + x +"-" + y + " " + className;
+          } else {
+            row.children[y].className = "tile tile-new tile-" + x +"-" + y + " " + className; 
+          }
+
+          (function (row, x, y) {
+            setTimeout( function () {
+              className = game.classGenerator(grid[x][y].value);
+              row.children[y].innerHTML = "<p>" + 
+                                          grid[x][y].value + 
+                                          "</p>";
+              row.children[y].className = "tile tile-" + 
+                                          x +"-" + y + " " + 
+                                          className;
+            }, 100);
+          })(row, x, y);
+
+        }
+
       }
     }
 
@@ -335,6 +421,16 @@
       gameMessage.innerHTML = "";
       gameMessage.className = "hide-messages"
     }
+  };
+
+  Game.prototype.setNewClasses = function (grid, x, y) {
+    setTimeout( function () {
+      var className = game.classGenerator(grid[x][y].value);
+      row.children[y].innerHTML = "<p>" + grid[x][y].value + "</p>";
+      row.children[y].className = "tile tile-" + 
+                                  x +"-" + y + " " + 
+                                  className;
+    }, 100);
   };
 
   Game.prototype.classGenerator = function (value) {

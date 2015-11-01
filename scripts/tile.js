@@ -5,6 +5,8 @@
     this.position = position;
     this.x = position.x;
     this.y = position.y;
+    
+    this.previousPosition = null;
 
     this.value = value;
     this.merged = false;
