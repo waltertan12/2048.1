@@ -19,7 +19,6 @@
 
     root.addEventListener("touchend", 
       function (e) {
-        e.preventDefault();
         var t = e.changedTouches[0]
         this.end = {x: t.clientX, y: t.clientY, time: Date.now() };
         this.detectSwipe(e);
