@@ -391,13 +391,15 @@
 
           (function (row, x, y) {
             setTimeout( function () {
-              className = game.classGenerator(grid[x][y].value);
-              row.children[y].innerHTML = "<p>" + 
-                                          grid[x][y].value + 
-                                          "</p>";
-              row.children[y].className = "tile tile-" + 
-                                          x +"-" + y + " " + 
-                                          className;
+              if (grid[x][y] !== null) {
+                className = game.classGenerator(grid[x][y].value);
+                row.children[y].innerHTML = "<p>" + 
+                                            grid[x][y].value + 
+                                            "</p>";
+                row.children[y].className = "tile tile-" + 
+                                            x +"-" + y + " " + 
+                                            className;
+              }
             }, 100);
           })(row, x, y);
 
