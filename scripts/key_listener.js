@@ -16,23 +16,23 @@
       // left arrow
       case 37:
         game.slide("down");
+        game.render();
         break;
       // up arrow
       case 38:
         game.slide("left");
-
+        game.render();
         break;
       // right arrow
       case 39:
         game.slide("up");
-
+        game.render();
         break;
       // down arrow
       case 40:
         game.slide("right");
-
+        game.render();
         break;
     }
-    game.render();
   };
 })(this);
