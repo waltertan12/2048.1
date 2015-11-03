@@ -258,9 +258,9 @@
       if (this.game.over ) {
         clearInterval(aiInterval);
       }
-      var start = Date.now();
+      // var start = Date.now();
       this.iterate(depth, option);
-      console.log("Time to execute: " + (Date.now() - start));
+      // console.log("Time to execute: " + (Date.now() - start));
     }.bind(this), this.interval)
   }
 })(this);

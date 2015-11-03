@@ -37,6 +37,13 @@
       grid[x][y] = null;
     }
 
+    // for (var x = 0; x < size; x++) {
+    //   grid.push([]);
+    //   for (var y = 0; y < size; y++) {
+    //     grid[x][y] = null;
+    //   }
+    // }
+
     return grid;
   };
 
@@ -44,23 +51,13 @@
     var availablePositions = [];
     var size = this.size;
 
-    for (var x = 0, y = 0; 
-         x < size && y < size;
-         y++,
-         x = (y === size) ? x + 1 : x,
-         y = (y === size) ? y = 0 : y) {
-      if (this.grid[x][y] === null) {
-        availablePositions.push({x: x, y: y});
+    for (var x = 0; x < size; x++) {
+      for (var y = 0; y < size; y++) {
+        if (this.grid[x][y] === null) {
+          availablePositions.push({x: x, y: y});
+        }
       }
     }
-
-    // for (var x = 0; x < size; x++) {
-    //   for (var y = 0; y < size; y++) {
-    //     if (this.grid[x][y] === null) {
-    //       availablePositions.push({x: x, y: y});
-    //     }
-    //   }
-    // }
 
     return availablePositions;
   };
@@ -97,18 +94,11 @@
 
   Grid.prototype.each = function (callback) {
     var size = this.size;
-    for (var x = 0, y = 0; 
-         x < size && y < size;
-         y++,
-         x = (y === size) ? x + 1 : x,
-         y = (y === size) ? y = 0 : y) {
-      callback(x, y, this.grid[x][y]);
-    }
 
-    // for (var x = 0; x < size; x++) {
-    //   for (var y = 0; y < size; y++) {
-    //     callback(x, y, this.grid[x][y]);
-    //   }
-    // }
+    for (var x = 0; x < size; x++) {
+      for (var y = 0; y < size; y++) {
+        callback(x, y, this.grid[x][y]);
+      }
+    }
   };
 })(this);

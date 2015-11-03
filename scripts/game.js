@@ -9,14 +9,15 @@
         "right": {x:  1, y:  0},
         "up":    {x:  0, y:  1},
         "down":  {x:  0, y: -1}
-      };
+      },
+      SIZE = 4;
 
-  var Game = root.Game = function (size) {
-    this.size = size;
+  var Game = root.Game = function () {
+    this.size = SIZE;
     this.score = 0;
     this.over = false;
     this.won = false;
-    this.grid = new Grid(size);
+    this.grid = new Grid(SIZE);
     this.addTile();
     this.addTile();
   };
