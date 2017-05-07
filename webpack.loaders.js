@@ -1,4 +1,4 @@
-[
+module.exports = [
     {
         test: /\.jsx?$/,
         exclude: /(node_modules|bower_components|public\/)/,
@@ -7,8 +7,7 @@
             presets: ['react', 'flow', 'es2015'],
             plugins: [
                 'transform-runtime', 
-                'transform-class-properties', 
-                'react-hot-loader/babel'
+                'transform-class-properties'
             ]
         }
     },
