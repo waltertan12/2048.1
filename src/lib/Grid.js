@@ -1,84 +1,82 @@
 // @flow
-import Tile from './Tile'
+
+import Utils from './Utils'
 
 class Grid {
-    state: Array<Array<?Tile>>;
+    state: Array<Array<?number>>;
     size: number;
 
-    /**
-     * @param {number} size
-     */
-    constructor(size: number, previousState: any) {
-        this.state = previousState ? createGridFromState() : createEmptyGrid(size) 
-        this.size = size
+    constructor(size: number, state: ?Array<Array<?number>>) {
+        if (state) {
+            this.state = state
+            this.size = this.state.length
+        } else {
+            this.state = Utils.createSquareMatrix(size) 
+            this.size = size
+        }
     }
 
-    /**
-     * @param {number}    x
-     * @param {number}    y
-     * @param {Tile|null} tile
-     */
-    addTile(x: number, y: number, tile: Tile): Grid {
-        if (this.validPosition(x, y))
-            this.state[x][y] = tile
+    getTile(x: number, y: number): ?number {
+        if (this.validPosition(x, y)) 
+            return this.state[x][y]
 
-        return this
+        return null
     }
 
-    /**
-     * @param {number} x
-     * @param {number} y
-     */
+    setTile(x: number, y: number, tile: ?number): Grid {
+        if (!this.validPosition(x, y))
+            throw new Error(`Invalid coordinates (${x}, ${y})`)
+
+        let newState = Utils.cloneMatrix(this.state)
+        
+        newState[x][y] = tile || null
+
+        return new Grid(this.size, newState)
+    }
+
+    setTiles(tiles: Array<any>) {
+        return tiles.reduce((newState, tile) => {
+            if (!this.validPosition(tile.x, tile.y))
+                continue // TODO: Maybe throw an exception and catch it
+
+            newState[tile.x][tile.y] = tile.tile
+
+            return newState
+        }, Utils.cloneMatrix(this.state))
+    }
+
     removeTile(x: number, y: number): Grid {
-        this.state[x][y] = null
-
-        return this
+        return this.setTile(x, y, null)
     }
 
-    /**
-     * @param  {number}  x
-     * @param  {number}  y
-     * @return {boolean}
-     */
     validPosition(x: number, y: number): boolean {
         return x >= 0 && y >= 0 && x < this.size && y < this.size
     }
-}
 
-/**
- * @param  {number}         size
- * @return {Array[Tile[]]}  state
- */
-const createGrid = (size: number): Array<Array<?Tile>> => {
-    let state = []
+    getEmptyPositions(): Array<any> {
+        let emptyPositions = []
 
-    for (let x = 0; x < size; x++) {
-        state.push([])
-
-        for (let y = 0; y < size; y++) {
-            state[x].push(null)
+        for (let x = 0; x < this.size; x++) {
+            for (let y = 0; y < this.size; y++) {
+                if (this.state[x][y] === null) 
+                    emptyPositions.push({x: x, y: y})
+            }
         }
+
+        return emptyPositions
     }
 
-    return state
-}
-
-const createGridFromState = (size: number, previousState: Array<Array<?number>): Array<Array<?Tile>> => {
-    let state = []
-
-    for (let x = 0; x < size; x++) {
-        state.push([])
-
-        for (let y = 0; y < size; y++) {
-            if (previousState[x][y])
-                state[x].push(new Tile(previousState[x][y]))
-            else
-                state[x].push(null)
-        }
+    rotate(): Grid {
+        return new Grid(this.size, Utils.rotateMatrix90(this.state))
     }
 
-    return state
+    clone(): Grid {
+        return new Grid(this.size, Utils.cloneMatrix(this.state))
+    }
+
+    print() {
+        this.state.forEach(x => console.log(x.join(', ')))
+    }
 }
 
 module.exports = Grid
-
