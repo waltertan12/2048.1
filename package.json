@@ -4,11 +4,11 @@
   "description": "2048 but with 1 as the starting tile",
   "main": "",
   "scripts": {
-    "build": "webpack --config webpack.transpile.config.js --progress --profile --colors",
+    "build": "webpack --config webpack.production.config.js --progress --profile --colors",
     "start": "webpack-dev-server --progress --profile --colors --https",
     "dev": " webpack-dashboard -- webpack-dev-server --https --progress --profile --colors",
     "flow": "flow",
-    "test": "echo ':('"
+    "test": "jest"
   },
   "repository": "git@github.com:waltertan12/2048.1.git",
   "author": "Walter Tan <waltertan12@gmail.com>",
